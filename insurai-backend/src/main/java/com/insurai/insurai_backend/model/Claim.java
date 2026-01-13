@@ -72,6 +72,7 @@ public class Claim {
     @ElementCollection
     @CollectionTable(name = "claim_documents", joinColumns = @JoinColumn(name = "claim_id"))
     @Column(name = "document_path")
+    @JsonIgnore
     private List<String> documents;
 
     // Fraud detection fields
