@@ -3,7 +3,10 @@ package com.insurai.insurai_backend.service;
 import com.insurai.insurai_backend.model.AuditLog;
 import com.insurai.insurai_backend.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +25,8 @@ public class AuditLogService {
      * @param action Action type (LOGIN, LOGOUT, CLAIM_APPROVE, etc.)
      * @param details Optional details about the action
      */
+    @Async
+    @Transactional
     public void logAction(String userId, String userName, String role, String action, String details) {
         AuditLog log = new AuditLog();
         log.setUserId(userId);
