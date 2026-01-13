@@ -182,7 +182,7 @@ public ResponseEntity<?> updateClaim(
 
 
 // -------------------- Get Employee Claims --------------------
-@Transactional(readOnly = true)
+
 @GetMapping("")
 public ResponseEntity<?> getEmployeeClaims(
         @RequestHeader(value = "Authorization", required = false) String authHeader

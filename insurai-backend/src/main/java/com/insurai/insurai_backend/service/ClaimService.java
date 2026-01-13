@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.insurai.insurai_backend.model.Claim;
 import com.insurai.insurai_backend.model.Employee;
@@ -116,7 +117,8 @@ public class ClaimService {
     private int getPendingClaimCount(Hr hr) {
         return claimRepository.countByAssignedHrAndStatus(hr, "Pending");
     }
-
+    
+    @Transactional(readOnly = true)
     public List<Claim> getClaimsByEmployee(Employee employee) {
         return claimRepository.findByEmployee(employee);
     }
