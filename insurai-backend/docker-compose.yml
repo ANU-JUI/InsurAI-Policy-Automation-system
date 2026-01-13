@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  insurai-backend:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: insurai-backend
+    ports:
+      - "9000:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db.txkgemcpojqaqzjyrfrr.supabase.co:5432/postgres?sslmode=require
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root@insurai
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      JAVA_TOOL_OPTIONS: "-Djava.net.preferIPv4Stack=true"
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: 'false'
+
+      SERVER_PORT: 8080
+    restart: unless-stopped

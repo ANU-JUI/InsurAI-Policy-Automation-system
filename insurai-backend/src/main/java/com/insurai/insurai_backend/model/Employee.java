@@ -10,11 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Data
 @Entity
 @Table(name = "employees")
 @Getter
@@ -28,11 +27,15 @@ public class Employee {
     private Long id;
 
     // 👇 Corporate employee ID
-    
     @Column(unique = true, nullable = false)
     private String employeeId;
 
     private String name;
+    // Add these fields to your Employee Entity
+private String lastUserAgent;      // To track device changes
+private Integer failedAttempt = 0;     // To count failed logins
+private LocalDateTime lockTime;    // To store account lock expiry
+   // Optional: for the AI features we discussed
 
     @Column(unique = true, nullable = false)
     private String email;

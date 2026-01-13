@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080", // backend base URL (no /api)
+  baseURL: "https://insurai-policy-automation-system-backend.onrender.com", // backend base URL (no /api)
   headers: {
     "Content-Type": "application/json",
   },

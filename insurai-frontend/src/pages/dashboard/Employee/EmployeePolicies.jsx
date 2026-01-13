@@ -34,7 +34,7 @@ export default function EmployeePolicies({
     try {
       // Backend expects GET /calculate-premium?amount=...&type=...
       const q = new URLSearchParams({ amount: String(Number(calcAmount)), type: calcType });
-      const res = await fetch(`http://localhost:8080/admin/policies/calculate-premium?${q.toString()}`);
+      const res = await fetch(`https://insurai-policy-automation-system-backend.onrender.com/admin/policies/calculate-premium?${q.toString()}`);
       if (!res.ok) throw new Error(`Failed to calculate (${res.status})`);
       const data = await res.json();
       if (data && typeof data.estimatedMonthlyPremium !== "undefined") {

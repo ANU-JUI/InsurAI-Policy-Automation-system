@@ -48,7 +48,7 @@ export default function ResetPassword() {
     try {
       // Send new password to backend
       const res = await axios.post(
-        `http://localhost:8080/auth/reset-password/${token}`,
+        `https://insurai-policy-automation-system-backend.onrender.com/auth/reset-password/${token}`,
         { newPassword: password } // Backend expects this field
       );
 

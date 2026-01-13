@@ -57,7 +57,7 @@ export default function AgentRegister({ onBack }) {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/admin/agent/register",
+        "https://insurai-policy-automation-system-backend.onrender.com/admin/agent/register",
         newAgent,
         {
           headers: {

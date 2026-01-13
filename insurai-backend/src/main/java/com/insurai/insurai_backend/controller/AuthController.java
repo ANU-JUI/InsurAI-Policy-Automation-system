@@ -24,6 +24,7 @@ import com.insurai.insurai_backend.repository.EmployeeRepository;
 import com.insurai.insurai_backend.service.AuditLogService;
 import com.insurai.insurai_backend.service.EmployeeService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -42,17 +43,25 @@ public class AuthController {
     // ================= Employee Registration =================
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-       
+        if (employeeRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("Email already exists");
+        }
+        if (employeeRepository.findByEmployeeId(request.getEmployeeId()).isPresent()) {
+            return ResponseEntity.badRequest().body("Employee ID already exists");
+        }
+
         Employee emp = new Employee();
         emp.setEmployeeId(request.getEmployeeId());
         emp.setName(request.getName());
         emp.setEmail(request.getEmail());
         emp.setPassword(passwordEncoder.encode(request.getPassword()));
         emp.setRole(Employee.Role.EMPLOYEE);
-        try{
+
+        try {
             employeeService.register(emp);
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         // Log action
@@ -67,44 +76,80 @@ public class AuthController {
         return ResponseEntity.ok("Employee registered successfully");
     }
 
-    // ================= Employee Login =================
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Employee emp = null;
+   // ================= Employee Login with Security Enhancements =================
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest servletRequest) {
+    Employee emp = null;
 
-        if (request.getEmployeeId() != null && !request.getEmployeeId().isBlank()) {
-            emp = employeeRepository.findByEmployeeId(request.getEmployeeId()).orElse(null);
-        } else if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            emp = employeeRepository.findByEmail(request.getEmail()).orElse(null);
+    // 1. Find the User
+    if (request.getEmployeeId() != null && !request.getEmployeeId().isBlank()) {
+        emp = employeeRepository.findByEmployeeId(request.getEmployeeId()).orElse(null);
+    } else if (request.getEmail() != null && !request.getEmail().isBlank()) {
+        emp = employeeRepository.findByEmail(request.getEmail()).orElse(null);
+    }
+
+    if (emp == null) {
+        return ResponseEntity.status(404).body("User not found");
+    }
+
+    // 2. Feature: Login Rate Limiting (Check if Account is Locked)
+    if (emp.getLockTime() != null && emp.getLockTime().isAfter(LocalDateTime.now())) {
+        return ResponseEntity.status(423).body("Account locked due to 5 failed attempts. Try again after " + emp.getLockTime());
+    }
+
+    // 3. Verify Password
+    if (!passwordEncoder.matches(request.getPassword(), emp.getPassword())) {
+        // Increment failed attempts
+        emp.setFailedAttempt(emp.getFailedAttempt() + 1);
+        
+        if (emp.getFailedAttempt() >= 5) {
+            emp.setLockTime(LocalDateTime.now().plusMinutes(15)); // Lock for 15 mins
+            auditLogService.logAction(emp.getEmployeeId(), emp.getName(), "EMPLOYEE", "ACCOUNT_LOCKED", "Too many failed attempts");
         }
+        
+        employeeRepository.save(emp);
+        int remaining = 5 - emp.getFailedAttempt();
+        return ResponseEntity.status(401).body("Incorrect password. Attempts remaining: " + (remaining > 0 ? remaining : 0));
+    }
 
-        if (emp == null) {
-            return ResponseEntity.status(404).body("User not found");
-        }
-
-        if (!passwordEncoder.matches(request.getPassword(), emp.getPassword())) {
-            return ResponseEntity.status(401).body("Incorrect password");
-        }
-
-        String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole().name());
-
-        // Log login action
+    // 4. Feature: New Device Login Alert
+    String currentAgent = servletRequest.getHeader("User-Agent");
+    if (emp.getLastUserAgent() != null && !emp.getLastUserAgent().equals(currentAgent)) {
         auditLogService.logAction(
                 emp.getEmployeeId(),
                 emp.getName(),
                 "EMPLOYEE",
-                "LOGIN",
-                "Employee logged in"
+                "SECURITY_ALERT",
+                "Login detected from a new device/browser"
         );
-
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "role", emp.getRole().name(),
-                "name", emp.getName(),
-                "employeeId", emp.getEmployeeId(),
-                "id", emp.getId()
-        ));
+        // If you have a notificationService, you can trigger a real-time alert here too
     }
+
+    // 5. Successful Login: Reset Security Counters
+    emp.setFailedAttempt(0);
+    emp.setLockTime(null);
+    emp.setLastUserAgent(currentAgent);
+    employeeRepository.save(emp);
+
+    // 6. Generate Token and Return Response
+    String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole().name());
+
+    auditLogService.logAction(
+            emp.getEmployeeId(),
+            emp.getName(),
+            "EMPLOYEE",
+            "LOGIN",
+            "Employee logged in successfully"
+    );
+
+    return ResponseEntity.ok(Map.of(
+            "token", token,
+            "role", emp.getRole().name(),
+            "name", emp.getName(),
+            "employeeId", emp.getEmployeeId(),
+            "id", emp.getId()
+    ));
+}
 
     // ================= Get All Employees =================
     @GetMapping("/employees")

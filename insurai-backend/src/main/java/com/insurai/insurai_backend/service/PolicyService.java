@@ -61,7 +61,16 @@ public Policy updatePolicy(Long id, Policy updatedPolicy) {
     }).orElseThrow(() -> new RuntimeException("Policy not found with id " + id));
 }
 
+public double calculateMonthlyPremium(double coverageAmount, String policyType) {
+    // Basic Enterprise Logic: 2% base rate adjusted by risk
+    double baseRate = 0.02; 
 
+    if (policyType.equalsIgnoreCase("HEALTH")) baseRate = 0.025;
+    else if (policyType.equalsIgnoreCase("LIFE")) baseRate = 0.035;
+    else if (policyType.equalsIgnoreCase("PROPERTY")) baseRate = 0.015;
+
+    return coverageAmount * baseRate;
+}
     // -------------------- Delete a policy --------------------
     public void deletePolicy(Long id) {
         policyRepository.deleteById(id);

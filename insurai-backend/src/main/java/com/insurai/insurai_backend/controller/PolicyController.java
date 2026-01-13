@@ -1,6 +1,7 @@
 package com.insurai.insurai_backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,6 +89,16 @@ public class PolicyController {
             return ResponseEntity.status(500).body("Failed to save policy or upload documents: " + e.getMessage());
         }
     }
+    @GetMapping("/calculate-premium")
+    public ResponseEntity<Map<String, Object>> getPremium(@RequestParam double amount, @RequestParam String type) {
+    double monthlyPremium = policyService.calculateMonthlyPremium(amount, type);
+    return ResponseEntity.ok(Map.of(
+            "coverageAmount", amount,
+            "policyType", type,
+            "estimatedMonthlyPremium", monthlyPremium,
+            "currency", "INR"
+    ));
+}
 
     // -------------------- Get all policies --------------------
     @GetMapping

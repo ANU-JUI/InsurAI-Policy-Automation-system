@@ -30,7 +30,7 @@ export default function EmployeeLogin() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/auth/login", {
+      const res = await axios.post("https://insurai-policy-automation-system-backend.onrender.com/auth/login", {
         email: email.trim().toLowerCase(),
         password,
       });

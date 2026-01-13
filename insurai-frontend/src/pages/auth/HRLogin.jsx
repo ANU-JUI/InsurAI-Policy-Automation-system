@@ -29,7 +29,7 @@ export default function HrLogin() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/hr/login", {
+      const res = await fetch("https://insurai-policy-automation-system-backend.onrender.com/hr/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

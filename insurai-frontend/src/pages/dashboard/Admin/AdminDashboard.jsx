@@ -48,7 +48,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem("token");
 
       // Fetch agents
-      const agentsRes = await axios.get("http://localhost:8080/agent", {
+      const agentsRes = await axios.get("https://insurai-policy-automation-system-backend.onrender.com/agent", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const agentsData = Array.isArray(agentsRes.data) ? agentsRes.data : [];
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
       }));
 
       // Fetch employees
-      const employeesRes = await axios.get("http://localhost:8080/auth/employees", {
+      const employeesRes = await axios.get("https://insurai-policy-automation-system-backend.onrender.com/auth/employees", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const employeesData = Array.isArray(employeesRes.data) ? employeesRes.data : [];
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
       }));
 
       // Fetch HRs
-      const hrsRes = await axios.get("http://localhost:8080/hr", {
+      const hrsRes = await axios.get("https://insurai-policy-automation-system-backend.onrender.com/hr", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const hrsData = Array.isArray(hrsRes.data) ? hrsRes.data : [];
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
   const handleRegisterHR = async (hrData) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:8080/admin/hr/register", hrData, {
+      await axios.post("https://insurai-policy-automation-system-backend.onrender.com/admin/hr/register", hrData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewHR({ name: "", email: "", password: "" });
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
   const handleRegisterAgent = async (agentData) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:8080/admin/agent/register", agentData, {
+      await axios.post("https://insurai-policy-automation-system-backend.onrender.com/admin/agent/register", agentData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewAgent({ name: "", email: "", password: "" });
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
       if (!token) return;
 
       // Fetch claims
-      const claimsRes = await fetch("http://localhost:8080/admin/claims", {
+      const claimsRes = await fetch("https://insurai-policy-automation-system-backend.onrender.com/admin/claims", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!claimsRes.ok) {
@@ -147,19 +147,19 @@ export default function AdminDashboard() {
       const claimsData = await claimsRes.json();
 
       // Fetch employees
-      const empRes = await fetch("http://localhost:8080/auth/employees", {
+      const empRes = await fetch("https://insurai-policy-automation-system-backend.onrender.com/auth/employees", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const employees = await empRes.json();
 
       // Fetch HRs
-      const hrRes = await fetch("http://localhost:8080/hr", {
+      const hrRes = await fetch("https://insurai-policy-automation-system-backend.onrender.com/hr", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const hrs = await hrRes.json();
 
       // Fetch policies
-      const policyRes = await fetch("http://localhost:8080/admin/policies", {
+      const policyRes = await fetch("https://insurai-policy-automation-system-backend.onrender.com/admin/policies", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const policiesData = await policyRes.json();

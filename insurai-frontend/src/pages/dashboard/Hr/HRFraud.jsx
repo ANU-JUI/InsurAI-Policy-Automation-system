@@ -29,7 +29,7 @@ const HRFraud = () => {
   const fetchFraudAlerts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/hr/claims/fraud", {
+      const response = await fetch("https://insurai-policy-automation-system-backend.onrender.com/hr/claims/fraud", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const HRFraud = () => {
 const fetchEmployees = async () => {
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:8080/employees", {
+    const res = await fetch("https://insurai-policy-automation-system-backend.onrender.com/employees", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -369,7 +369,7 @@ const employeeMap = useMemo(() => {
                       </td>
                       <td>
                         {a.documents?.map((doc, i) => (
-                          <a key={i} href={`http://localhost:8080${doc}`} target="_blank" className="d-block">
+                          <a key={i} href={`https://insurai-policy-automation-system-backend.onrender.com${doc}`} target="_blank" className="d-block">
                             Doc {i + 1}
                           </a>
                         ))}
@@ -406,7 +406,7 @@ const employeeMap = useMemo(() => {
                 <p><strong>Documents:</strong></p>
                 <ul>
                   {viewingAlert.documents?.map((doc, i) => (
-                    <li key={i}><a href={`http://localhost:8080${doc}`} target="_blank">Document {i + 1}</a></li>
+                    <li key={i}><a href={`https://insurai-policy-automation-system-backend.onrender.com${doc}`} target="_blank">Document {i + 1}</a></li>
                   ))}
                 </ul>
               </div>

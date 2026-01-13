@@ -29,8 +29,8 @@ export default function EmployeeNotification({ userDbId, token }) {
       try {
         const url =
           filter === "unread"
-            ? `http://localhost:8080/notifications/user/${Number(userDbId)}/unread`
-            : `http://localhost:8080/notifications/user/${Number(userDbId)}`;
+            ? `https://insurai-policy-automation-system-backend.onrender.com/notifications/user/${Number(userDbId)}/unread`
+            : `https://insurai-policy-automation-system-backend.onrender.com/notifications/user/${Number(userDbId)}`;
 
         const response = await axios.get(url, {
           params: { role: "EMPLOYEE" },
@@ -61,7 +61,7 @@ export default function EmployeeNotification({ userDbId, token }) {
   const markAsRead = async (notificationId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/notifications/${Number(notificationId)}/read`,
+        `https://insurai-policy-automation-system-backend.onrender.com/notifications/${Number(notificationId)}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -106,7 +106,7 @@ export default function EmployeeNotification({ userDbId, token }) {
       await Promise.all(
         Array.from(selectedNotifications).map((id) =>
           axios.put(
-            `http://localhost:8080/notifications/${Number(id)}/read`,
+            `https://insurai-policy-automation-system-backend.onrender.com/notifications/${Number(id)}/read`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
           )
@@ -169,7 +169,7 @@ export default function EmployeeNotification({ userDbId, token }) {
       await Promise.all(
         newDeviceAlerts.map((a) =>
           axios.put(
-            `http://localhost:8080/notifications/${Number(a.id)}/read`,
+            `https://insurai-policy-automation-system-backend.onrender.com/notifications/${Number(a.id)}/read`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
           )

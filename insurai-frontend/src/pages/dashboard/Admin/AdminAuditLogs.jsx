@@ -16,7 +16,7 @@ const AdminAuditLogs = ({ themeColors }) => {
   // Fetch logs from backend
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:8080/admin/audit/logs", {
+    fetch("https://insurai-policy-automation-system-backend.onrender.com/admin/audit/logs", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

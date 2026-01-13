@@ -17,7 +17,7 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/auth/forgot-password", { 
+      const res = await axios.post("https://insurai-policy-automation-system-backend.onrender.com/auth/forgot-password", { 
         email: email.trim().toLowerCase() 
       });
 

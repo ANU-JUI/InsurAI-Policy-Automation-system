@@ -42,7 +42,7 @@ const fetchClaims = async () => {
 
   setLoading(true);
   try {
-    const res = await fetch("http://localhost:8080/employee/claims", {
+    const res = await fetch("https://insurai-policy-automation-system-backend.onrender.com/employee/claims", {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) throw new Error("Failed to fetch claims");
@@ -225,9 +225,9 @@ const fetchClaims = async () => {
 
       newClaim.documents.forEach(file => formData.append("documents", file));
 
-      let url = "http://localhost:8080/employee/claims";
+      let url = "https://insurai-policy-automation-system-backend.onrender.com/employee/claims";
       if (newClaim.id) {
-        url = "http://localhost:8080/employee/claims/update";
+        url = "https://insurai-policy-automation-system-backend.onrender.com/employee/claims/update";
         formData.append("claimId", newClaim.id);
       }
 
@@ -680,7 +680,7 @@ const fetchClaims = async () => {
                       {viewingClaim.documents.map((doc, index) => (
                         <a 
                           key={index}
-                          href={`http://localhost:8080${doc}`} 
+                          href={`https://insurai-policy-automation-system-backend.onrender.com${doc}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
@@ -920,7 +920,7 @@ const renderNewClaimForm = () => {
                               </small>
                             </div>
                             <div>
-                              <a href={`http://localhost:8080${doc}`} target="_blank" rel="noopener noreferrer"
+                              <a href={`https://insurai-policy-automation-system-backend.onrender.com${doc}`} target="_blank" rel="noopener noreferrer"
                                  className="btn btn-sm btn-outline-primary me-1" title="View">
                                 <i className="bi bi-eye"></i>
                               </a>

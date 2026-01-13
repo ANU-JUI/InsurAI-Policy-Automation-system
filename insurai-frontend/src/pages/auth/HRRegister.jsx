@@ -90,7 +90,7 @@ const handlePhoneChange = (e) => {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/admin/hr/register",
+        "https://insurai-policy-automation-system-backend.onrender.com/admin/hr/register",
         newHr,
         {
           headers: { 
