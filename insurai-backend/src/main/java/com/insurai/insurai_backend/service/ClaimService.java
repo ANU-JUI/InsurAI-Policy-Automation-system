@@ -35,6 +35,7 @@ public class ClaimService {
     /**
      * Submit a new claim with automatic HR assignment
      */
+    @Transactional
     public Claim submitClaim(Claim claim) throws Exception {
         if (claim.getAmount() > claim.getPolicy().getCoverageAmount()) {
             throw new Exception("Claim amount exceeds policy coverage!");

@@ -24,6 +24,7 @@ import com.insurai.insurai_backend.model.LoginRequest;
 import com.insurai.insurai_backend.repository.HrRepository;
 import com.insurai.insurai_backend.service.AuditLogService;
 import com.insurai.insurai_backend.service.ClaimService;
+import com.insurai.insurai_backend.service.EmailService;
 import com.insurai.insurai_backend.service.HrService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class HrController {
     private final JwtUtil jwtUtil;
     private final ClaimService claimService;
     private final AuditLogService auditLogService;
+    private final EmailService emailService;
 
 // ================= HR Login =================
 @PostMapping("/login")
@@ -175,6 +177,22 @@ public ResponseEntity<?> approveClaim(
                 "Approved claim ID: " + claimId
         );
 
+        // -------------------- Send approval email --------------------
+        try {
+            if (updated.getEmployee() != null && updated.getEmployee().getEmail() != null) {
+                emailService.sendClaimApprovalEmail(
+                    updated.getEmployee().getEmail(),
+                    updated.getEmployee().getName(),
+                    updated.getId(),
+                    updated.getTitle(),
+                    updated.getAmount()
+                );
+            }
+        } catch (Exception emailEx) {
+            System.err.println("⚠️ Email sending failed: " + emailEx.getMessage());
+            // Don't fail the claim approval if email fails
+        }
+
         return ResponseEntity.ok(new ClaimDTO(updated));
     } catch (Exception e) {
         return ResponseEntity.status(400).body("Error approving claim: " + e.getMessage());
@@ -214,6 +232,22 @@ public ResponseEntity<?> rejectClaim(
                 "CLAIM_REJECT",
                 "Rejected claim ID: " + claimId
         );
+
+        // -------------------- Send rejection email --------------------
+        try {
+            if (updated.getEmployee() != null && updated.getEmployee().getEmail() != null) {
+                emailService.sendClaimRejectionEmail(
+                    updated.getEmployee().getEmail(),
+                    updated.getEmployee().getName(),
+                    updated.getId(),
+                    updated.getTitle(),
+                    remarks != null ? remarks : "Not specified"
+                );
+            }
+        } catch (Exception emailEx) {
+            System.err.println("⚠️ Email sending failed: " + emailEx.getMessage());
+            // Don't fail the claim rejection if email fails
+        }
 
         return ResponseEntity.ok(new ClaimDTO(updated));
     } catch (Exception e) {
